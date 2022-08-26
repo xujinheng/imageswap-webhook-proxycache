@@ -54,17 +54,18 @@ EOF
     if [[ ${swaped_image} == ${ANSWERS[i]} ]]; then
         echo "✅[Passed]"
         echo "Original: ${ORIGIN_IMAGES[i]}"
-        echo "Swapped: ${swaped_image}"
+        echo "Swapped : ${swaped_image}"
         ((passed=passed+1))
     else
         echo "❌[Failed]"
         echo "Original: ${ORIGIN_IMAGES[i]}"
-        echo "Swapped: ${swaped_image}"
-        echo "Should be ${ANSWERS[i]}"
+        echo "Swapped : ${swaped_image}"
+        echo "Answer  : ${ANSWERS[i]}"
         ((failed=failed+1))
     fi
 done
 
+echo "---"
 echo "passed: ${passed}"
 echo "failed: ${failed}"
 

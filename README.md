@@ -1,8 +1,9 @@
 # imageswap-webhook-harbor-proxycache
 
-Image Swap Mutating Admission Webhook for Kubernetes. The project is tailored for VMware internal usage, based on https://github.com/phenixblue/imageswap-webhook. 
+The project is tailored for VMware internal usage, based on https://github.com/phenixblue/imageswap-webhook. 
 
-For every pod create in k8s cluster, the webhook automatically swap its image registry to:
+For every pod created in a Kubernetes cluster, the webhook automatically swap its image registry to:
+
 - harbor-repo.vmware.com/dockerhub-proxy-cache
 - harbor-repo.vmware.com/gcr-proxy-cache
 - harbor-repo.vmware.com/ghcr-proxy-cache

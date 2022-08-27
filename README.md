@@ -13,6 +13,10 @@ For every pod created in a Kubernetes cluster, the webhook automatically swap it
 ### Deployment
 Deploy imageswap webhook with default settings tailored for VMware internal usage:
 ```bash
+# Deletion is necessary to avoid MutatingWebhookConfiguration updating failures
+# see issue https://github.com/phenixblue/imageswap-webhook/issues/78
+kubectl delete -f imageswap_deploy.yaml
+kubectl delete MutatingWebhookConfiguration imageswap-webhook
 kubectl apply -f imageswap_deploy.yaml --namespace=imageswap-system
 ```
 
@@ -99,3 +103,5 @@ failed: 2
 delete testing namespace: imageswap-testing-20220827-0217
 namespace "imageswap-testing-20220827-0217" deleted
 ```
+
+See issue https://github.com/phenixblue/imageswap-webhook/issues/77 to track progress on above failures.

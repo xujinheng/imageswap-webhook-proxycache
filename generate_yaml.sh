@@ -31,8 +31,29 @@ data:
     k8s.gcr.io::harbor-repo.vmware.com/gcr-proxy-cache/google-containers
     gcr.io::harbor-repo.vmware.com/gcr-proxy-cache
     ghcr.io::harbor-repo.vmware.com/ghcr-proxy-cache
+---
 ' >> $1
 }
+
+function DUMP_PSP() {
+    echo '
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rb-all-sa_ns-imageswap-system
+  namespace: imageswap-system
+roleRef:
+  kind: ClusterRole
+  name: psp:vmware-system-privileged
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  apiGroup: rbac.authorization.k8s.io
+  name: system:serviceaccounts:imageswap-system
+---
+' >> $1
+} 
 
 ####################################################
 
@@ -74,6 +95,7 @@ yq -i '.webhooks[].failurePolicy = env(FAILUREPOLICY)' imageswap-webhook/deploy/
 yq -i '.spec.replicas = env(REPLICAS)' imageswap-webhook/deploy/overlays/production/deploy-patch.yaml
 
 kubectl kustomize imageswap-webhook/deploy/overlays/production > imageswap_deploy.yaml
+DUMP_PSP imageswap_deploy.yaml
 DUMP_PROXYMAP imageswap_deploy.yaml
 
 echo "Yaml file generated at imageswap_deploy.yaml, to deploy:"

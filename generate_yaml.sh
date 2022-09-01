@@ -87,6 +87,9 @@ if [[ $( yq '.spec.template.spec.containers[].image == "harbor-repo.vmware.com*"
     yq -i '.spec.template.spec.containers[].image |= "harbor-repo.vmware.com/dockerhub-proxy-cache/" + . ' ${deploy_file}
 fi
 
+# add missing namespace of imageswap-mwc-template
+yq -i '.configMapGenerator[].namespace = "imageswap-system" ' imageswap-webhook/deploy/manifests/kustomization.yaml
+
 if [[ ${CLUSTER_WIDE} == 'True' ]]; then
     yq -i 'del(.webhooks[].namespaceSelector)' imageswap-webhook/deploy/manifests/imageswap-mwc.yaml
 fi

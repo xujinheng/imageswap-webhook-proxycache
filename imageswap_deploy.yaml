@@ -191,6 +191,7 @@ data:
 kind: ConfigMap
 metadata:
   name: imageswap-mwc-template
+  namespace: imageswap-system
 ---
 apiVersion: v1
 kind: Service

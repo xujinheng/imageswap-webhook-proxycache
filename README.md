@@ -42,9 +42,9 @@ Run test
 
 My testing results
 ```yaml
-create testing namespace: imageswap-testing-20220827-0217
-namespace/imageswap-testing-20220827-0217 created
-namespace/imageswap-testing-20220827-0217 labeled
+create testing namespace: imageswap-testing-20220916-1441
+namespace/imageswap-testing-20220916-1441 created
+namespace/imageswap-testing-20220916-1441 labeled
 ---
 pod/test-pod0 created
 ✅[Passed]
@@ -98,10 +98,16 @@ pod/test-pod9 created
 Original: quay.io/minio/minio
 Swapped : quay.io/minio/minio
 ---
+pod/test-pod10 created
+❌[Failed]
+Original: localhost:5000/vmware/kube-rbac-proxy:0.0.1
+Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/localhost:5000/vmware/kube-rbac-proxy:0.0.1
+Answer  : localhost:5000/vmware/kube-rbac-proxy:0.0.1
+---
 passed: 8
-failed: 2
-delete testing namespace: imageswap-testing-20220827-0217
-namespace "imageswap-testing-20220827-0217" deleted
+failed: 3
+delete testing namespace: imageswap-testing-20220916-1441
+namespace "imageswap-testing-20220916-1441" deleted
 ```
 
 See issue https://github.com/phenixblue/imageswap-webhook/issues/77 to track progress on above failures.

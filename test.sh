@@ -13,6 +13,7 @@ ORIGIN_IMAGES=( \
     'k8s.gcr.io/nginx' \
     'ghcr.io/linuxcontainers/nginx' \
     'quay.io/minio/minio' \
+    'localhost:5000/vmware/kube-rbac-proxy:0.0.1' \
     )
 
 ANSWERS=( \
@@ -26,6 +27,7 @@ ANSWERS=( \
     'harbor-repo.vmware.com/gcr-proxy-cache/google-containers/nginx' \
     'harbor-repo.vmware.com/ghcr-proxy-cache/linuxcontainers/nginx' \
     'quay.io/minio/minio' \
+    'localhost:5000/vmware/kube-rbac-proxy:0.0.1' \
     )
     
 echo "create testing namespace: ${NAMESPACE}"

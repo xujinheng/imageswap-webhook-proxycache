@@ -17,7 +17,7 @@ Deploy imageswap webhook with default settings tailored for VMware internal usag
 # see issue https://github.com/phenixblue/imageswap-webhook/issues/78
 kubectl delete -f imageswap_deploy.yaml
 kubectl delete MutatingWebhookConfiguration imageswap-webhook
-kubectl apply -f imageswap_deploy.yaml --namespace=imageswap-system
+kubectl apply -f imageswap_deploy.yaml
 ```
 
   

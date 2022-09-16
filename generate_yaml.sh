@@ -24,6 +24,7 @@ metadata:
 data:
   maps: |
     default::
+    localhost:5000::
     docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache
     docker.io/library::harbor-repo.vmware.com/dockerhub-proxy-cache/library
     index.docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache
@@ -102,4 +103,6 @@ DUMP_PSP imageswap_deploy.yaml
 DUMP_PROXYMAP imageswap_deploy.yaml
 
 echo "Yaml file generated at imageswap_deploy.yaml, to deploy:"
-echo "kubectl apply -f imageswap_deploy.yaml --namespace=imageswap-system"
+echo "kubectl delete -f imageswap_deploy.yaml"
+echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook"
+echo "kubectl apply -f imageswap_deploy.yaml"

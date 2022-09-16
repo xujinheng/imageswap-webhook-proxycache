@@ -67,11 +67,8 @@ if [ $? -eq 0 ]; then
     export HTTPS_PROXY="http://proxy.vmware.com:3128"
 fi
 
-if [ -e 'imageswap-webhook' ]; then
-    echo "imageswap-webhook already exists, skip git clone!"
-else
-    git clone git@github.com:phenixblue/imageswap-webhook.git
-fi
+rm -rf ./imageswap-webhook
+git clone git@github.com:phenixblue/imageswap-webhook.git
 
 yq version &> /dev/null
 if [[ ! $? == '0' ]]; then

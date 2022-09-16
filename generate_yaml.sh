@@ -1,4 +1,5 @@
 #!/bin/bash
+cd $(dirname $0)
 
 ### Scope: cluster wide or namespace wide
 CLUSTER_WIDE="True"

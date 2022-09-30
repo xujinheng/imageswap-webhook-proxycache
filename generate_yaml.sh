@@ -14,7 +14,7 @@ export FAILUREPOLICY=Ignore
 
 export REPLICAS=3
 
-function DUMP_PROXYMAP() {
+function DUMP_PROXYMAP_VMware() {
     echo '
 ---
 apiVersion: v1
@@ -25,7 +25,6 @@ metadata:
 data:
   maps: |
     default::
-    localhost:5000::
     docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache
     docker.io/library::harbor-repo.vmware.com/dockerhub-proxy-cache/library
     index.docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache
@@ -33,6 +32,29 @@ data:
     k8s.gcr.io::harbor-repo.vmware.com/gcr-proxy-cache/google-containers
     gcr.io::harbor-repo.vmware.com/gcr-proxy-cache
     ghcr.io::harbor-repo.vmware.com/ghcr-proxy-cache
+---
+' >> $1
+}
+
+function DUMP_PROXYMAP_Public() {
+    echo '
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: imageswap-maps
+  namespace: imageswap-system
+data:
+  maps: |
+    default::
+    docker.io::docker.nju.edu.cn
+    docker.io/library::docker.nju.edu.cn
+    index.docker.io::docker.nju.edu.cn
+    index.docker.io/library::docker.nju.edu.cn
+    k8s.gcr.io::gcr.nju.edu.cn/google-containers
+    gcr.io::gcr.nju.edu.cn
+    ghcr.io::ghcr.nju.edu.cn
+    quay.io::quay.nju.edu.cn
 ---
 ' >> $1
 }
@@ -98,9 +120,20 @@ yq -i '.spec.replicas = env(REPLICAS)' imageswap-webhook/deploy/overlays/product
 
 kubectl kustomize imageswap-webhook/deploy/overlays/production > imageswap_deploy.yaml
 DUMP_PSP imageswap_deploy.yaml
-DUMP_PROXYMAP imageswap_deploy.yaml
+
+cp imageswap_deploy.yaml imageswap_deploy_VMware.yaml
+cp imageswap_deploy.yaml imageswap_deploy_Public.yaml
+rm imageswap_deploy.yaml
+
+DUMP_PROXYMAP_VMware imageswap_deploy_VMware.yaml
+DUMP_PROXYMAP_Public imageswap_deploy_Public.yaml
 
 echo "Yaml file generated at imageswap_deploy.yaml, to deploy:"
-echo "kubectl delete -f imageswap_deploy.yaml"
+echo 1. Deploy imageswap webhook with default settings tailored for VMware internal usage:
+echo "kubectl delete -f imageswap_deploy_VMware.yaml"
 echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook"
-echo "kubectl apply -f imageswap_deploy.yaml"
+echo "kubectl apply -f imageswap_deploy_VMware.yaml"
+echo 2. Deploy imageswap webhook with default settings tailored for Public usage:
+echo "kubectl delete -f imageswap_deploy_Public.yaml"
+echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook"
+echo "kubectl apply -f imageswap_deploy_Public.yaml"

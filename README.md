@@ -1,23 +1,28 @@
-# imageswap-webhook-harbor-proxycache
+# imageswap-webhook-proxycache
 
-The project is tailored for VMware internal usage, based on https://github.com/phenixblue/imageswap-webhook. 
+The project is tailored for vSphere TKG usage, based on https://github.com/phenixblue/imageswap-webhook. 
 
-For every pod created in a Kubernetes cluster, the webhook automatically swap its image registry to:
-
-- harbor-repo.vmware.com/dockerhub-proxy-cache
-- harbor-repo.vmware.com/gcr-proxy-cache
-- harbor-repo.vmware.com/ghcr-proxy-cache
+For every pod created in a Kubernetes cluster, the webhook automatically swap its image registry to the configured proxy.
 
 ## Getting started
 
 ### Deployment
-Deploy imageswap webhook with default settings tailored for VMware internal usage:
+1. Deploy imageswap webhook with default settings tailored for VMware internal usage:
 ```bash
 # Deletion is necessary to avoid MutatingWebhookConfiguration updating failures
 # see issue https://github.com/phenixblue/imageswap-webhook/issues/78
-kubectl delete -f imageswap_deploy.yaml
+kubectl delete -f imageswap_deploy_VMware.yaml
 kubectl delete MutatingWebhookConfiguration imageswap-webhook
-kubectl apply -f imageswap_deploy.yaml
+kubectl apply -f imageswap_deploy_VMware.yaml
+```
+
+2. Deploy imageswap webhook with default settings tailored for Public usage:
+```bash
+# Deletion is necessary to avoid MutatingWebhookConfiguration updating failures
+# see issue https://github.com/phenixblue/imageswap-webhook/issues/78
+kubectl delete -f imageswap_deploy_Public.yaml
+kubectl delete MutatingWebhookConfiguration imageswap-webhook
+kubectl apply -f imageswap_deploy_Public.yaml
 ```
 
   
@@ -27,7 +32,8 @@ Default settings
   - CLUSTER_WIDE: True
   - failurePolicy: Ignore
   - replicas: 3
-  - proxymap enabled: dockerhub, gcr, ghcr
+  - proxymap (VMware): dockerhub, gcr, ghcr
+  - proxymap (Public): dockerhub, gcr, ghcr, quay
 
 Modify settings in generate_yaml.sh and generate a new yaml file
 ```bash

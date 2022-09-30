@@ -367,7 +367,6 @@ metadata:
 data:
   maps: |
     default::
-    localhost:5000::
     docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache
     docker.io/library::harbor-repo.vmware.com/dockerhub-proxy-cache/library
     index.docker.io::harbor-repo.vmware.com/dockerhub-proxy-cache

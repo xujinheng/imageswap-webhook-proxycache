@@ -1,5 +1,7 @@
 #!/bin/bash
-cd $(dirname $0)
+
+dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "$dir"
 
 ### Scope: cluster wide or namespace wide
 CLUSTER_WIDE="True"
@@ -79,6 +81,18 @@ subjects:
 ' >> $1
 } 
 
+function common_configure() {
+  # add missing namespace of imageswap-mwc-template
+  yq -i '.configMapGenerator[].namespace = "imageswap-system" ' imageswap-webhook/deploy/manifests/kustomization.yaml
+
+  if [[ ${CLUSTER_WIDE} == 'True' ]]; then
+      yq -i 'del(.webhooks[].namespaceSelector)' imageswap-webhook/deploy/manifests/imageswap-mwc.yaml
+  fi
+
+  yq -i '.webhooks[].failurePolicy = env(FAILUREPOLICY)' imageswap-webhook/deploy/manifests/imageswap-mwc.yaml
+  yq -i '.spec.replicas = env(REPLICAS)' imageswap-webhook/deploy/overlays/production/deploy-patch.yaml
+}
+
 ####################################################
 
 ping -c 1 proxy.vmware.com &> /dev/null
@@ -90,50 +104,39 @@ if [ $? -eq 0 ]; then
     export HTTPS_PROXY="http://proxy.vmware.com:3128"
 fi
 
-rm -rf ./imageswap-webhook
-git clone git@github.com:phenixblue/imageswap-webhook.git
-
 yq version &> /dev/null
 if [[ ! $? == '0' ]]; then
     echo "install yq"
     sudo snap install yq 
 fi
 
-# add harbor-repo.vmware.com/dockerhub-proxy-cache/ if not yet
-deploy_file=imageswap-webhook/deploy/manifests/imageswap-deploy.yaml
-if [[ $( yq '.spec.template.spec.initContainers[].image == "harbor-repo.vmware.com*" ' ${deploy_file} ) == "false" ]]; then
-    yq -i '.spec.template.spec.initContainers[].image |= "harbor-repo.vmware.com/dockerhub-proxy-cache/" + . ' ${deploy_file}
-fi
-if [[ $( yq '.spec.template.spec.containers[].image == "harbor-repo.vmware.com*" ' ${deploy_file} ) == "false" ]]; then
-    yq -i '.spec.template.spec.containers[].image |= "harbor-repo.vmware.com/dockerhub-proxy-cache/" + . ' ${deploy_file}
-fi
+####################################################
 
-# add missing namespace of imageswap-mwc-template
-yq -i '.configMapGenerator[].namespace = "imageswap-system" ' imageswap-webhook/deploy/manifests/kustomization.yaml
-
-if [[ ${CLUSTER_WIDE} == 'True' ]]; then
-    yq -i 'del(.webhooks[].namespaceSelector)' imageswap-webhook/deploy/manifests/imageswap-mwc.yaml
-fi
-
-yq -i '.webhooks[].failurePolicy = env(FAILUREPOLICY)' imageswap-webhook/deploy/manifests/imageswap-mwc.yaml
-yq -i '.spec.replicas = env(REPLICAS)' imageswap-webhook/deploy/overlays/production/deploy-patch.yaml
-
-kubectl kustomize imageswap-webhook/deploy/overlays/production > imageswap_deploy.yaml
-DUMP_PSP imageswap_deploy.yaml
-
-cp imageswap_deploy.yaml imageswap_deploy_VMware.yaml
-cp imageswap_deploy.yaml imageswap_deploy_Public.yaml
-rm imageswap_deploy.yaml
-
-DUMP_PROXYMAP_VMware imageswap_deploy_VMware.yaml
+# public
+git submodule deinit -f .
+git submodule update --init --recursive
+common_configure
+kubectl kustomize imageswap-webhook/deploy/overlays/production > imageswap_deploy_Public.yaml
+DUMP_PSP imageswap_deploy_Public.yaml
 DUMP_PROXYMAP_Public imageswap_deploy_Public.yaml
+
+# VMware
+git submodule deinit -f .
+git submodule update --init --recursive
+common_configure
+yq -i '.spec.template.spec.initContainers[].image |= "harbor-repo.vmware.com/dockerhub-proxy-cache/" + . ' imageswap-webhook/deploy/manifests/imageswap-deploy.yaml
+yq -i '.spec.template.spec.containers[].image |= "harbor-repo.vmware.com/dockerhub-proxy-cache/" + . ' imageswap-webhook/deploy/manifests/imageswap-deploy.yaml
+kubectl kustomize imageswap-webhook/deploy/overlays/production > imageswap_deploy_VMware.yaml
+DUMP_PSP imageswap_deploy_VMware.yaml
+DUMP_PROXYMAP_VMware imageswap_deploy_VMware.yaml
+
 
 echo "Yaml file generated at imageswap_deploy.yaml, to deploy:"
 echo 1. Deploy imageswap webhook with default settings tailored for VMware internal usage:
-echo "kubectl delete -f imageswap_deploy_VMware.yaml"
-echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook"
+echo "kubectl delete -f imageswap_deploy_VMware.yaml --ignore-not-found=true"
+echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook --ignore-not-found=true"
 echo "kubectl apply -f imageswap_deploy_VMware.yaml"
 echo 2. Deploy imageswap webhook with default settings tailored for Public usage:
-echo "kubectl delete -f imageswap_deploy_Public.yaml"
-echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook"
+echo "kubectl delete -f imageswap_deploy_Public.yaml --ignore-not-found=true"
+echo "kubectl delete MutatingWebhookConfiguration imageswap-webhook --ignore-not-found=true"
 echo "kubectl apply -f imageswap_deploy_Public.yaml"

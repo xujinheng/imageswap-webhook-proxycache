@@ -188,6 +188,9 @@ data:
         admissionReviewVersions: ["v1"]
         failurePolicy: Ignore
         reinvocationPolicy: IfNeeded
+        namespaceSelector:
+          matchLabels:
+            k8s.twr.io/imageswap: "enabled"
 kind: ConfigMap
 metadata:
   name: imageswap-mwc-template

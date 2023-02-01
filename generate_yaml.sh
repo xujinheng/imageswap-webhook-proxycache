@@ -4,11 +4,10 @@ dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$dir"
 
 ### Scope: cluster wide or namespace wide
-CLUSTER_WIDE="True"
-
 ### To enable image swap for namespace ${certain-namespace}:
 ### kubectl label ns ${certain-namespace} k8s.twr.io/imageswap=enabled
-# CLUSTER_WIDE="False"
+CLUSTER_WIDE="False"
+# CLUSTER_WIDE="True"
 
 ### failurePolicy defines how unrecognized errors and timeout errors from the admission webhook are handled. 
 # export FAILUREPOLICY=Fail

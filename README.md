@@ -29,7 +29,7 @@ kubectl apply -f imageswap_deploy_Public.yaml
 ### Customize
 
 Default settings
-  - CLUSTER_WIDE: True
+  - CLUSTER_WIDE: False
   - failurePolicy: Ignore
   - replicas: 3
   - proxymap (VMware): dockerhub, gcr, ghcr

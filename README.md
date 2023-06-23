@@ -7,113 +7,126 @@ For every pod created in a Kubernetes cluster, the webhook automatically swap it
 ## Getting started
 
 ### Deployment
-1. [VMware internal proxy] Deploy imageswap webhook with default settings:
+1. [Optional] Edit imageswap-maps with mirrors in https://github.com/eryajf/Thanks-Mirror#mirrors-66
+2. Deploy imageswap webhook:
 ```bash
 # Deletion is necessary to avoid MutatingWebhookConfiguration updating failures
 # see issue https://github.com/phenixblue/imageswap-webhook/issues/78
-kubectl delete -f imageswap_deploy_VMware.yaml --ignore-not-found=true
+kubectl delete -f imageswap.yaml --ignore-not-found=true
 kubectl delete MutatingWebhookConfiguration imageswap-webhook --ignore-not-found=true
-kubectl apply -f imageswap_deploy_VMware.yaml
-```
-
-1. [Public proxy] Deploy imageswap webhook with default settings:
-```bash
-# Deletion is necessary to avoid MutatingWebhookConfiguration updating failures
-# see issue https://github.com/phenixblue/imageswap-webhook/issues/78
-kubectl delete -f imageswap_deploy_Public.yaml --ignore-not-found=true
-kubectl delete MutatingWebhookConfiguration imageswap-webhook --ignore-not-found=true
-kubectl apply -f imageswap_deploy_Public.yaml
-```
-
-  
-### Customize
-
-Default settings
-  - CLUSTER_WIDE: False
-  - failurePolicy: Ignore
-  - replicas: 3
-  - proxymap (VMware): dockerhub, gcr, ghcr
-  - proxymap (Public): dockerhub, gcr, ghcr, quay
-
-Modify settings in generate_yaml.sh and generate a new yaml file
-```bash
-./generate_yaml.sh
+kubectl apply -f imageswap.yaml
 ```
 
 ### Testing
 Run test
 ```bash
-./test.sh
+python3 test.py
 ```
 
 My testing results
 ```yaml
-create testing namespace: imageswap-testing-20220916-1441
-namespace/imageswap-testing-20220916-1441 created
-namespace/imageswap-testing-20220916-1441 labeled
----
-pod/test-pod0 created
+create namespace: imageswap-test-20230623-172133
+create pod with image: nginx
+create pod with image: bitnami/nginx
+create pod with image: docker.io/nginx
+create pod with image: docker.io/bitnami/nginx
+create pod with image: index.docker.io/nginx
+create pod with image: index.docker.io/bitnami/nginx
+create pod with image: gcr.io/arrikto/nginx
+create pod with image: k8s.gcr.io/nginx
+create pod with image: ghcr.io/linuxcontainers/nginx
+create pod with image: quay.io/minio/minio
+create pod with image: localhost:5000/vmware/kube-rbac-proxy:0.0.1
+create pod with image: docker.io/kubeflownotebookswg/poddefaults-webhook
+create pod with image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
+create pod with image: gcr.io/ml-pipeline/cache-deployer:2.0.0-alpha.3
+create pod with image: docker.io/istio/proxyv2:1.14.1
+create pod with image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:14415b204ea8d0567235143a6c3377f49cbd35f18dc84dfa4baa7695c2a9b53d
+create pod with image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:23baa19322320f25a462568eded1276601ef67194883db9211e1ea24f21a0beb
+Press Enter to check results and delete testing resources...
+0
 ✅[Passed]
-Original: nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/library/nginx
----
-pod/test-pod1 created
+- original: nginx
+- swapped: docker.nju.edu.cn/nginx
+- phase: Running
+1
 ✅[Passed]
-Original: bitnami/nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/bitnami/nginx
----
-pod/test-pod2 created
+- original: bitnami/nginx
+- swapped: docker.nju.edu.cn/bitnami/nginx
+- phase: Running
+2
+✅[Passed]
+- original: docker.io/nginx
+- swapped: docker.nju.edu.cn/nginx
+- phase: Running
+3
+✅[Passed]
+- original: docker.io/bitnami/nginx
+- swapped: docker.nju.edu.cn/bitnami/nginx
+- phase: Running
+4
+✅[Passed]
+- original: index.docker.io/nginx
+- swapped: docker.nju.edu.cn/nginx
+- phase: Running
+5
+✅[Passed]
+- original: index.docker.io/bitnami/nginx
+- swapped: docker.nju.edu.cn/bitnami/nginx
+- phase: Running
+6
+✅[Passed]
+- original: gcr.io/arrikto/nginx
+- swapped: gcr.nju.edu.cn/arrikto/nginx
+- phase: Running
+7
+✅[Passed]
+- original: k8s.gcr.io/nginx
+- swapped: gcr.nju.edu.cn/google-containers/nginx
+- phase: Running
+8
+✅[Passed]
+- original: ghcr.io/linuxcontainers/nginx
+- swapped: ghcr.nju.edu.cn/linuxcontainers/nginx
+- phase: Running
+9
+✅[Passed]
+- original: quay.io/minio/minio
+- swapped: quay.nju.edu.cn/minio/minio
+- phase: Running
+10
 ❌[Failed]
-Original: docker.io/nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/nginx
-Answer  : harbor-repo.vmware.com/dockerhub-proxy-cache/library/nginx
----
-pod/test-pod3 created
+- original: localhost:5000/vmware/kube-rbac-proxy:0.0.1
+- swapped: docker.nju.edu.cn/localhost:5000/vmware/kube-rbac-proxy:0.0.1
+- phase: Pending
+11
 ✅[Passed]
-Original: docker.io/bitnami/nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/bitnami/nginx
----
-pod/test-pod4 created
-❌[Failed]
-Original: index.docker.io/nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/nginx
-Answer  : harbor-repo.vmware.com/dockerhub-proxy-cache/library/nginx
----
-pod/test-pod5 created
+- original: docker.io/kubeflownotebookswg/poddefaults-webhook
+- swapped: docker.nju.edu.cn/kubeflownotebookswg/poddefaults-webhook
+- phase: Running
+12
 ✅[Passed]
-Original: index.docker.io/bitnami/nginx
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/bitnami/nginx
----
-pod/test-pod6 created
+- original: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
+- swapped: gcr.nju.edu.cn/kubebuilder/kube-rbac-proxy:v0.4.0
+- phase: Running
+13
 ✅[Passed]
-Original: gcr.io/arrikto/nginx
-Swapped : harbor-repo.vmware.com/gcr-proxy-cache/arrikto/nginx
----
-pod/test-pod7 created
+- original: gcr.io/ml-pipeline/cache-deployer:2.0.0-alpha.3
+- swapped: gcr.nju.edu.cn/ml-pipeline/cache-deployer:2.0.0-alpha.3
+- phase: Running
+14
 ✅[Passed]
-Original: k8s.gcr.io/nginx
-Swapped : harbor-repo.vmware.com/gcr-proxy-cache/google-containers/nginx
----
-pod/test-pod8 created
+- original: docker.io/istio/proxyv2:1.14.1
+- swapped: docker.nju.edu.cn/istio/proxyv2:1.14.1
+- phase: Running
+15
 ✅[Passed]
-Original: ghcr.io/linuxcontainers/nginx
-Swapped : harbor-repo.vmware.com/ghcr-proxy-cache/linuxcontainers/nginx
----
-pod/test-pod9 created
+- original: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:14415b204ea8d0567235143a6c3377f49cbd35f18dc84dfa4baa7695c2a9b53d
+- swapped: gcr.nju.edu.cn/knative-releases/knative.dev/serving/cmd/queue@sha256:14415b204ea8d0567235143a6c3377f49cbd35f18dc84dfa4baa7695c2a9b53d
+- phase: Running
+16
 ✅[Passed]
-Original: quay.io/minio/minio
-Swapped : quay.io/minio/minio
----
-pod/test-pod10 created
-❌[Failed]
-Original: localhost:5000/vmware/kube-rbac-proxy:0.0.1
-Swapped : harbor-repo.vmware.com/dockerhub-proxy-cache/localhost:5000/vmware/kube-rbac-proxy:0.0.1
-Answer  : localhost:5000/vmware/kube-rbac-proxy:0.0.1
----
-passed: 8
-failed: 3
-delete testing namespace: imageswap-testing-20220916-1441
-namespace "imageswap-testing-20220916-1441" deleted
+- original: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:23baa19322320f25a462568eded1276601ef67194883db9211e1ea24f21a0beb
+- swapped: gcr.nju.edu.cn/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:23baa19322320f25a462568eded1276601ef67194883db9211e1ea24f21a0beb
+- phase: Running
 ```
-
-See issue https://github.com/phenixblue/imageswap-webhook/issues/77 to track progress on above failures.

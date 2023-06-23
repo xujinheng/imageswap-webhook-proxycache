@@ -1,3 +1,0 @@
-[submodule "imageswap-webhook"]
-	path = imageswap-webhook
-	url = https://github.com/phenixblue/imageswap-webhook.git

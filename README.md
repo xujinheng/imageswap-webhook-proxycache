@@ -16,7 +16,8 @@ kubectl delete -f imageswap.yaml --ignore-not-found=true
 kubectl delete MutatingWebhookConfiguration imageswap-webhook --ignore-not-found=true
 kubectl apply -f imageswap.yaml
 ```
-
+3. kubectl label ns ${namespace} k8s.twr.io/imageswap=enabled
+   
 ### Testing
 Run test
 ```bash

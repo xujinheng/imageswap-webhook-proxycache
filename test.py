@@ -68,6 +68,7 @@ ORIGIN_IMAGES=[
     'k8s.gcr.io/nginx',
     'ghcr.io/linuxcontainers/nginx',
     'quay.io/minio/minio',
+    'registry.k8s.io/scheduler-plugins/controller:v0.25.7',
     'localhost:5000/vmware/kube-rbac-proxy:0.0.1',
     "docker.io/kubeflownotebookswg/poddefaults-webhook",
     "gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0",

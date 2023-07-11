@@ -26,7 +26,7 @@ python3 test.py
 
 My testing results
 ```yaml
-create namespace: imageswap-test-20230623-172133
+create namespace: imageswap-test-20230711-162119
 create pod with image: nginx
 create pod with image: bitnami/nginx
 create pod with image: docker.io/nginx
@@ -37,6 +37,7 @@ create pod with image: gcr.io/arrikto/nginx
 create pod with image: k8s.gcr.io/nginx
 create pod with image: ghcr.io/linuxcontainers/nginx
 create pod with image: quay.io/minio/minio
+create pod with image: registry.k8s.io/scheduler-plugins/controller:v0.25.7
 create pod with image: localhost:5000/vmware/kube-rbac-proxy:0.0.1
 create pod with image: docker.io/kubeflownotebookswg/poddefaults-webhook
 create pod with image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
@@ -96,36 +97,41 @@ Press Enter to check results and delete testing resources...
 - swapped: quay.nju.edu.cn/minio/minio
 - phase: Running
 10
+✅[Passed]
+- original: registry.k8s.io/scheduler-plugins/controller:v0.25.7
+- swapped: k8s.dockerproxy.com/scheduler-plugins/controller:v0.25.7
+- phase: Running
+11
 ❌[Failed]
 - original: localhost:5000/vmware/kube-rbac-proxy:0.0.1
 - swapped: docker.nju.edu.cn/localhost:5000/vmware/kube-rbac-proxy:0.0.1
 - phase: Pending
-11
+12
 ✅[Passed]
 - original: docker.io/kubeflownotebookswg/poddefaults-webhook
 - swapped: docker.nju.edu.cn/kubeflownotebookswg/poddefaults-webhook
 - phase: Running
-12
+13
 ✅[Passed]
 - original: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0
 - swapped: gcr.nju.edu.cn/kubebuilder/kube-rbac-proxy:v0.4.0
 - phase: Running
-13
+14
 ✅[Passed]
 - original: gcr.io/ml-pipeline/cache-deployer:2.0.0-alpha.3
 - swapped: gcr.nju.edu.cn/ml-pipeline/cache-deployer:2.0.0-alpha.3
 - phase: Running
-14
+15
 ✅[Passed]
 - original: docker.io/istio/proxyv2:1.14.1
 - swapped: docker.nju.edu.cn/istio/proxyv2:1.14.1
 - phase: Running
-15
+16
 ✅[Passed]
 - original: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:14415b204ea8d0567235143a6c3377f49cbd35f18dc84dfa4baa7695c2a9b53d
 - swapped: gcr.nju.edu.cn/knative-releases/knative.dev/serving/cmd/queue@sha256:14415b204ea8d0567235143a6c3377f49cbd35f18dc84dfa4baa7695c2a9b53d
 - phase: Running
-16
+17
 ✅[Passed]
 - original: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:23baa19322320f25a462568eded1276601ef67194883db9211e1ea24f21a0beb
 - swapped: gcr.nju.edu.cn/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:23baa19322320f25a462568eded1276601ef67194883db9211e1ea24f21a0beb

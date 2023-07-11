@@ -217,6 +217,7 @@ data:
     gcr.io::gcr.nju.edu.cn
     ghcr.io::ghcr.nju.edu.cn
     quay.io::quay.nju.edu.cn
+    registry.k8s.io::k8s.dockerproxy.com
 kind: ConfigMap
 metadata:
   creationTimestamp: null

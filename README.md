@@ -26,7 +26,7 @@ python3 test.py
 
 My testing results
 ```yaml
-create namespace: imageswap-test-20230711-162119
+create namespace: imageswap-test-20230712-165211
 create pod with image: nginx
 create pod with image: bitnami/nginx
 create pod with image: docker.io/nginx
@@ -34,7 +34,7 @@ create pod with image: docker.io/bitnami/nginx
 create pod with image: index.docker.io/nginx
 create pod with image: index.docker.io/bitnami/nginx
 create pod with image: gcr.io/arrikto/nginx
-create pod with image: k8s.gcr.io/nginx
+create pod with image: k8s.gcr.io/scheduler-plugins/controller:v0.23.10
 create pod with image: ghcr.io/linuxcontainers/nginx
 create pod with image: quay.io/minio/minio
 create pod with image: registry.k8s.io/scheduler-plugins/controller:v0.25.7
@@ -83,8 +83,8 @@ Press Enter to check results and delete testing resources...
 - phase: Running
 7
 ✅[Passed]
-- original: k8s.gcr.io/nginx
-- swapped: gcr.nju.edu.cn/google-containers/nginx
+- original: k8s.gcr.io/scheduler-plugins/controller:v0.23.10
+- swapped: k8s.dockerproxy.com/scheduler-plugins/controller:v0.23.10
 - phase: Running
 8
 ✅[Passed]

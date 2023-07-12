@@ -65,7 +65,7 @@ ORIGIN_IMAGES=[
     'index.docker.io/nginx',
     'index.docker.io/bitnami/nginx',
     'gcr.io/arrikto/nginx',
-    'k8s.gcr.io/nginx',
+    'k8s.gcr.io/scheduler-plugins/controller:v0.23.10',
     'ghcr.io/linuxcontainers/nginx',
     'quay.io/minio/minio',
     'registry.k8s.io/scheduler-plugins/controller:v0.25.7',

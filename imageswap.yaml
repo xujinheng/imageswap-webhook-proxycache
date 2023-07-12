@@ -213,11 +213,11 @@ data:
     docker.io/library::docker.nju.edu.cn
     index.docker.io::docker.nju.edu.cn
     index.docker.io/library::docker.nju.edu.cn
-    k8s.gcr.io::gcr.nju.edu.cn/google-containers
+    k8s.gcr.io::k8s.dockerproxy.com
+    registry.k8s.io::k8s.dockerproxy.com
     gcr.io::gcr.nju.edu.cn
     ghcr.io::ghcr.nju.edu.cn
     quay.io::quay.nju.edu.cn
-    registry.k8s.io::k8s.dockerproxy.com
 kind: ConfigMap
 metadata:
   creationTimestamp: null
